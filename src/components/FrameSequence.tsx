@@ -73,10 +73,7 @@ export default function FrameSequence() {
 
     async function loadFrames() {
       try {
-        const res = await fetch('/api/frame-count', { signal: controller.signal });
-        if (!res.ok) throw new Error('Failed to fetch frame count');
-        const data = (await res.json()) as { count: number };
-        const totalFrames = data.count;
+        const totalFrames = 318; // Hardcoded for static export
 
         const step = isMobile ? 2 : 1;
         const indices: number[] = [];
@@ -86,7 +83,7 @@ export default function FrameSequence() {
 
         if (prefersReduced) {
           const lastImg = new Image();
-          lastImg.src = `/frames/frame_${String(totalFrames).padStart(3, '0')}.webp`;
+          lastImg.src = `frames/frame_${String(totalFrames).padStart(3, '0')}.webp`;
           await new Promise<void>((resolve) => {
             lastImg.onload = () => resolve();
             lastImg.onerror = () => resolve();
@@ -105,7 +102,7 @@ export default function FrameSequence() {
           indices.map((frameNum, i) =>
             new Promise<void>((resolve) => {
               const img = new Image();
-              img.src = `/frames/frame_${String(frameNum).padStart(3, '0')}.webp`;
+              img.src = `frames/frame_${String(frameNum).padStart(3, '0')}.webp`;
               img.onload = () => {
                 images[i] = img;
                 loaded++;
