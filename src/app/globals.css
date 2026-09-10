@@ -1,0 +1,185 @@
+@import "tailwindcss";
+
+:root {
+  --terminal-color: #33ff33;
+  --terminal-color-dim: #1faa1f;
+  --terminal-color-bright: #66ff66;
+  /* #000000 = measured color of last frame (new sequence ending on pure black) */
+  --terminal-bg: #000000;
+  --terminal-glow: rgba(51, 255, 51, 0.10);
+  --terminal-glow-strong: rgba(51, 255, 51, 0.22);
+  --terminal-border: rgba(51, 255, 51, 0.18);
+  --font-sans: var(--font-inter), system-ui, sans-serif;
+  --font-mono: var(--font-mono), 'Courier New', monospace;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  background: #000;
+}
+
+body {
+  font-family: var(--font-sans);
+  /* Black base prevents any white flash between sections */
+  background: #000;
+  overflow-x: hidden;
+}
+
+/* ── Keyframes ─────────────────────────────────────── */
+
+@keyframes bounce-arrow {
+  0%, 100% { transform: translateY(0); opacity: 1; }
+  50%       { transform: translateY(8px); opacity: 0.6; }
+}
+
+@keyframes crt-flicker {
+  0%, 100% { opacity: 1; }
+  2%        { opacity: 0.97; }
+  22%       { opacity: 0.98; }
+  82%       { opacity: 0.96; }
+}
+
+@keyframes cursor-blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+@keyframes noise {
+  0%   { transform: translate(0,0); }
+  25%  { transform: translate(-1px, 1px); }
+  50%  { transform: translate(1px, -1px); }
+  75%  { transform: translate(-1px, -1px); }
+  100% { transform: translate(1px, 1px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  html { scroll-behavior: auto; }
+}
+
+/* ── Single CRT wrapper for Sections 3 + 4 ─────────── */
+/* Flat #000000 bg + extremely subtle scanlines only.   */
+/* No vignette, no barrel-distortion, no window chrome. */
+
+.crt-terminal-wrapper {
+  position: relative;
+  background-color: #000;
+  animation: crt-flicker 10s infinite;
+}
+
+/* Barely-visible horizontal scanlines — the ONLY retro effect */
+.crt-terminal-wrapper::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 5;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0px,
+    transparent 3px,
+    rgba(0, 0, 0, 0.09) 3px,
+    rgba(0, 0, 0, 0.09) 4px
+  );
+}
+
+/* ── Status bar (sticky bottom) ──────────────────────── */
+.crt-status-bar {
+  position: sticky;
+  bottom: 0;
+  z-index: 50;
+  background: rgba(0, 0, 0, 0.92);
+  border-top: 1px solid rgba(51, 255, 51, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.3rem 3rem;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--terminal-color);
+  opacity: 0.3;
+  letter-spacing: 0.04em;
+  pointer-events: none;
+}
+
+/* ── crt-screen — only used by error/not-found pages ── */
+.crt-screen {
+  position: relative;
+  background: #000;
+  color: var(--terminal-color);
+  font-family: var(--font-mono);
+  animation: crt-flicker 10s infinite;
+}
+.crt-screen::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 5;
+  background: repeating-linear-gradient(
+    to bottom, transparent 0px, transparent 3px,
+    rgba(0,0,0,0.09) 3px, rgba(0,0,0,0.09) 4px
+  );
+  border-radius: inherit;
+}
+
+/* ── Terminal typography ─────────────────────────────── */
+.terminal-text {
+  font-family: var(--font-mono);
+  color: var(--terminal-color);
+  font-size: clamp(0.75rem, 1.5vw, 0.9rem);
+  line-height: 1.7;
+}
+
+.terminal-cursor {
+  display: inline-block;
+  width: 0.55em;
+  height: 1.1em;
+  background: var(--terminal-color);
+  vertical-align: text-bottom;
+  animation: cursor-blink 1s step-end infinite;
+}
+
+.bounce-arrow { animation: bounce-arrow 2s ease-in-out infinite; }
+
+/* ── Scrollbar ───────────────────────────────────────── */
+.terminal-scrollbar::-webkit-scrollbar { width: 3px; }
+.terminal-scrollbar::-webkit-scrollbar-track { background: transparent; }
+.terminal-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--terminal-color-dim);
+  border-radius: 2px;
+}
+
+/* ── Input ───────────────────────────────────────────── */
+.terminal-input {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--terminal-color);
+  font-family: var(--font-mono);
+  font-size: clamp(0.75rem, 1.5vw, 0.9rem);
+  caret-color: var(--terminal-color);
+  width: 100%;
+}
+.terminal-input::placeholder {
+  color: var(--terminal-color-dim);
+  opacity: 0.4;
+}
+
+/* ── Loading bar ─────────────────────────────────────── */
+.loading-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--terminal-color-dim), var(--terminal-color), var(--terminal-color-bright));
+  transition: width 0.1s ease-out;
+  box-shadow: 0 0 8px var(--terminal-glow-strong);
+}
