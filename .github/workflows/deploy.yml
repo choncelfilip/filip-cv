@@ -41,7 +41,7 @@ jobs:
         # But for GitHub pages, env vars must be injected at build time!
         run: npm run build
         env:
-          NEXT_PUBLIC_CHAT_WEBHOOK_URL: "http://localhost:5678/webhook/c23bf97b-3e19-4981-b663-0839dad6b5e8"
+          NEXT_PUBLIC_CHAT_WEBHOOK_URL: "https://revolt-huddle-trapped.ngrok-free.dev/webhook/c23bf97b-3e19-4981-b663-0839dad6b5e8"
           
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
