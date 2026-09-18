@@ -176,6 +176,22 @@ body {
   opacity: 0.4;
 }
 
+/* ── Mobile keyboard fix ─────────────────────────────── */
+/* iOS Safari robi autozoom gdy font-size < 16px → triggeruje dodatkowy resize */
+@media (max-width: 767px) {
+  .terminal-input {
+    font-size: 16px;
+  }
+}
+
+/* Użyj dynamic viewport height (dvh) gdy dostępny — */
+/* zapobiega przesunięciu sekcji gdy klawiatura zmienia vh */
+@supports (height: 100dvh) {
+  .crt-terminal-wrapper {
+    min-height: 100dvh;
+  }
+}
+
 /* ── Loading bar ─────────────────────────────────────── */
 .loading-bar-fill {
   height: 100%;

@@ -193,11 +193,20 @@ export default function ChatSection() {
 
   // Set up GSAP and Canvas on mount
   useEffect(() => {
+    // Ignoruj resize od klawiatury mobilnej — zapobiega przeliczaniu pinów ScrollTriggera
+    // gdy klawiatura pojawia się/znika, co powodowałoby utratę focusu na inpucie.
+    ScrollTrigger.config({ ignoreMobileResize: true });
+
     buildMatrix();
     
     // Handle resize re-building the matrix
     let resizeTimer: NodeJS.Timeout;
+    let lastWidth = window.innerWidth;
     const onResize = () => {
+      const newWidth = window.innerWidth;
+      // Klawiatura mobilna zmienia tylko wysokość — pomiń budowanie matrycy i refresh
+      if (newWidth === lastWidth && 'ontouchstart' in window) return;
+      lastWidth = newWidth;
       clearTimeout(resizeTimer);
       resizeTimer = setTimeout(() => {
         buildMatrix();
@@ -242,7 +251,13 @@ export default function ChatSection() {
             setVisibleTipsChars(TIPS_TEXT.length);
             setIntroDone(true);
           },
-          onLeaveBack: () => setIntroDone(false),
+          onLeaveBack: () => {
+            // Nie resetuj introDone gdy użytkownik aktualnie pisze w chacie
+            // (klawiatura mobilna zmienia viewport → fałszywy "leave back")
+            const chatInput = document.getElementById('chat-input');
+            if (chatInput && document.activeElement === chatInput) return;
+            setIntroDone(false);
+          },
         });
       }, section);
       
@@ -259,7 +274,7 @@ export default function ChatSection() {
   // ── Interactive Chat Logic ──
   const sessionIdRef = useRef<string>(generateId());
   const inputRef = useRef<HTMLInputElement>(null);
-  const bottomRef = useRef<HTMLDivElement>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
   const abortRef = useRef<AbortController | null>(null);
 
   const [messages, setMessages] = useState<ChatMessage[]>(() => [
@@ -271,7 +286,12 @@ export default function ChatSection() {
   const [isTyping, setIsTyping] = useState(false);
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+    // Scrolluj wewnętrzny kontener wiadomości, NIE cały dokument.
+    // scrollIntoView() przesuwa główny scroll → psuje piny ScrollTriggera na mobilce.
+    const container = messagesContainerRef.current;
+    if (container) {
+      container.scrollTop = container.scrollHeight;
+    }
   }, [messages, typingText]);
 
   useEffect(() => () => { abortRef.current?.abort(); }, []);
@@ -434,6 +454,7 @@ export default function ChatSection() {
         >
           {/* Messages Area */}
           <div
+            ref={messagesContainerRef}
             className="terminal-scrollbar"
             style={{ overflowY: 'auto', paddingBottom: '1rem' }}
           >
@@ -479,13 +500,13 @@ export default function ChatSection() {
                 <span style={{ fontSize: '0.8em', opacity: 0.6 }}>(esc aby anulować)</span>
               </div>
             )}
-            <div ref={bottomRef} />
           </div>
 
           {/* Gemini CLI Boxed Input Bar */}
           <form
             onSubmit={handleSubmit}
             style={{
+              touchAction: 'manipulation',
               border: '1.5px solid var(--terminal-color)',
               borderRadius: '8px',
               padding: '0.8rem 1.25rem',
@@ -514,6 +535,8 @@ export default function ChatSection() {
               id="chat-input"
               ref={inputRef}
               type="text"
+              inputMode="text"
+              enterKeyHint="send"
               className="terminal-input"
               placeholder={introDone ? 'Wpisz pytanie do AI...' : 'Przewiń w dół, aby odblokować chat...'}
               value={input}

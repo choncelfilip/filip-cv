@@ -152,6 +152,9 @@ export default function FrameSequence() {
     const sticky = stickyRef.current;
     if (!section || !sticky) return;
 
+    // Ignoruj resize od klawiatury mobilnej — zapobiega przeliczeniu pinów
+    ScrollTrigger.config({ ignoreMobileResize: true });
+
     const ctx = gsap.context(() => {
       if (!prefersReduced) {
         // Fade-in canvas during first 12% of section scroll.

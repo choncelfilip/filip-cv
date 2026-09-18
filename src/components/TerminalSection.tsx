@@ -59,6 +59,10 @@ export default function TerminalSection() {
     const sticky = stickyRef.current;
     if (!section || !sticky) return;
 
+    // Ignoruj resize od klawiatury mobilnej — klawiatura zmienia innerHeight
+    // co powoduje przeliczenie pinów i scroll jump.
+    ScrollTrigger.config({ ignoreMobileResize: true });
+
     const ctx = gsap.context(() => {
       ScrollTrigger.create({
         trigger: section,
