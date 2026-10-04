@@ -16,10 +16,10 @@ const INTRO_HEIGHT = '280vh'; // More scroll space for the matrix reveal
 const TIPS_TEXT = `
 Tips for getting started:
 
-1. Zapytaj o doświadczenie, umiejętności lub realizowane projekty.
-2. Zadawaj konkretne pytania dla najlepszych rezultatów.
-3. Zapytaj o dostępność i warunki współpracy.
-4. Wpisz pytanie w polu poniżej i naciśnij Enter.
+1. Ask about experience, skills, or completed projects.
+2. Ask specific questions for the best results.
+3. Ask about availability and terms of collaboration.
+4. Type your question in the field below and press Enter.
 `.trimStart();
 
 function generateId(): string {
@@ -183,9 +183,9 @@ export default function ChatSection() {
 
     const currentRow = Math.min(rows, fullRows + (rowPartial > 0 ? 1 : 0));
     if (fullRows >= rows && rows > 0) {
-      setRowCountText(`[ render zakończony — ${rows} wierszy ]`);
+      setRowCountText(`[ render complete — ${rows} rows ]`);
     } else if (currentRow > 0 && rows > 0) {
-      setRowCountText(`[ wiersz ${currentRow} / ${rows} ]`);
+      setRowCountText(`[ row ${currentRow} / ${rows} ]`);
     } else {
       setRowCountText('');
     }
@@ -350,8 +350,8 @@ export default function ChatSection() {
       if (controller.signal.aborted) return;
       const msg =
         err instanceof Error && err.message.includes('HTTP')
-          ? `[error] server returned ${err.message} — spróbuj ponownie`
-          : '[error] brak połączenia — sprawdź sieć i spróbuj ponownie';
+          ? `[error] server returned ${err.message} — please try again`
+          : '[error] no connection — check your network and try again';
       setIsLoading(false);
       setMessages((prev) => [
         ...prev,
@@ -388,7 +388,7 @@ export default function ChatSection() {
       ref={sectionRef}
       id="chat-ai"
       style={{ height: INTRO_HEIGHT }}
-      aria-label="Sekcja AI Chat Terminal"
+      aria-label="AI Chat Terminal section"
     >
       <div
         ref={stickyRef}
@@ -494,10 +494,10 @@ export default function ChatSection() {
 
             {isLoading && !isTyping && (
               <div style={{ ...textStyle, opacity: 0.5, marginBottom: '0.85rem' }}>
-                Łączę się z modelem...
+                Connecting to model...
                 <Cursor isBlinking />
                 {'  '}
-                <span style={{ fontSize: '0.8em', opacity: 0.6 }}>(esc aby anulować)</span>
+                <span style={{ fontSize: '0.8em', opacity: 0.6 }}>(esc to cancel)</span>
               </div>
             )}
           </div>
@@ -538,12 +538,12 @@ export default function ChatSection() {
               inputMode="text"
               enterKeyHint="send"
               className="terminal-input"
-              placeholder={introDone ? 'Wpisz pytanie do AI...' : 'Przewiń w dół, aby odblokować chat...'}
+              placeholder={introDone ? 'Type a question to the AI...' : 'Scroll down to unlock chat...'}
               value={input}
               onChange={(e) => setInput(e.target.value)}
               disabled={isLoading || isTyping || !introDone}
               autoComplete="off"
-              aria-label="Wiadomość do AI"
+              aria-label="Message to AI"
               style={{
                 flex: 1,
                 fontFamily: 'var(--font-mono)',
@@ -574,7 +574,7 @@ export default function ChatSection() {
                 transition: 'opacity 0.15s, background 0.15s',
                 textShadow: '0 0 4px var(--terminal-color)',
               }}
-              aria-label="Wyślij"
+              aria-label="Send"
             >
               [ENTER]
             </button>

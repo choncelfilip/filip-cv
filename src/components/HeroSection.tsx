@@ -56,7 +56,7 @@ export default function HeroSection() {
     <section
       ref={sectionRef}
       style={{ height: '120vh' }}
-      aria-label="Sekcja powitalna"
+      aria-label="Welcome section"
     >
       <div
         ref={stickyRef}
@@ -103,7 +103,7 @@ export default function HeroSection() {
           {/* Scroll indicator */}
           <div
             className="bounce-arrow flex flex-col items-center gap-1 mt-4"
-            aria-label="Przewiń w dół"
+            aria-label="Scroll down"
             role="img"
           >
             <span

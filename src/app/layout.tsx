@@ -17,11 +17,11 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   title: 'Filip Choncel — AI / Automation Developer',
   description:
-    'Interaktywne CV Filipa Choncela — specjalista AI i automatyzacji. Integracje z Claude, GPT, Gemini, n8n, Supabase.',
+    'Interactive CV of Filip Choncel — AI and automation specialist. Integrations with Claude, GPT, Gemini, n8n, Supabase.',
   keywords: ['AI Developer', 'Automation Developer', 'n8n', 'Supabase', 'ChatBot', 'Filip Choncel'],
   openGraph: {
     title: 'Filip Choncel — AI / Automation Developer',
-    description: 'Interaktywne CV — integracje AI i automatyzacji w biznesie',
+    description: 'Interactive CV — AI integrations and business automation',
     type: 'website',
   },
 };
@@ -32,7 +32,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pl" className={`${inter.variable} ${jetbrainsMono.variable}`}>
+    <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable}`}>
       <body className="antialiased">{children}</body>
     </html>
   );

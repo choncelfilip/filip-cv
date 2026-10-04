@@ -6,7 +6,7 @@ import HeroSection from '@/components/HeroSection';
 const FrameSequence = dynamic(() => import('@/components/FrameSequence'), {
   ssr: false,
   loading: () => (
-    <div style={{ height: '300vh', backgroundColor: '#A19FA0' }} aria-label="Ładowanie animacji" />
+    <div style={{ height: '300vh', backgroundColor: '#A19FA0' }} aria-label="Loading animation" />
   ),
 });
 
